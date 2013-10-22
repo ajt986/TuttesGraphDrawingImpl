@@ -1,0 +1,75 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<title>LG To PLSG</title>	
+	<script src="js/jquery-1.9.1.js"></script>
+	<script src="js/vertex.js"></script>
+	<script src="js/edge.js"></script>
+	<script src="js/graph.js"></script>
+	<script>
+
+		$(function(){
+			var canvas = document.getElementById("appcanvas");
+			var ctx = canvas.getContext("2d");
+
+			var v1 = new Vertex([100,100], "test");
+			var v2 = new Vertex([10,10], "test2");
+			var e = new Edge(v1,v2);
+
+			e.draw(ctx);
+			v1.draw(ctx);
+			v2.draw(ctx);
+
+			var g = new Graph();
+
+			
+
+			$("#submit").click(function(){
+				g.loadGraph($("#graphinput").val());
+				ctx.clearRect(0,0,600,500);
+				g.draw(ctx);
+			});
+
+		});
+
+
+	</script>
+
+	<style>
+		#appcanvas {
+			border-style: solid;
+		}
+	
+		.inputcontrols {
+			float: left;
+		}
+
+	</style>
+</head>
+<body>
+
+<canvas id="appcanvas" width="600" height="500"></canvas>
+
+<div id="controls">
+
+	<div class="inputcontrols">
+		<div>Input:</div>
+		<div>
+			<textarea id="graphinput" rows="4" cols="25"></textarea>
+		</div>
+		<div>
+			<button>Random Graph</button>
+			<button id="submit">Load</button>
+		</div>
+	</div>
+
+	<div class="algorithmcontrols">
+		<button>Original Graph</button>
+		<button>Previous</button>
+		<button>Next</button>
+		<button>PSLG</button>
+		<button>Barycentric Decomposition</button>
+	</div>
+</div>
+</body>
+</html>
