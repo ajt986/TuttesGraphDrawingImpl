@@ -90,10 +90,33 @@ var LinearAlgebra = function(){
 			}
 
 		}
-
-		
-
 	};
 
+
+	this.matrixScalarMultiplication = function(matrix, c){
+		var rv = new Array();
+		for(var i = 0; i < matrix.length; i++){
+			rv[i] = new Array();
+			for(var j = 0; j < matrix[i].length; j++){
+				rv[i][j] = matrix[i][j]*c;
+			}
+		}
+		return rv;
+	};
+
+	this.matrixSubtraction = function(a, b){
+		return this.matrixAddition(a, this.matrixScalarMultiplication(b, -1));
+	};
+	
+	this.matrixAddition = function(a, b){
+		var rv = new Array();
+		for(var i = 0; i < a.length; i++){
+			rv[i] = new Array();
+			for(var j = 0; j < a[i].length; j++){
+				rv[i][j] = a[i][j]+b[i][j];
+			}
+		}
+		return rv;
+	};
 
 } 

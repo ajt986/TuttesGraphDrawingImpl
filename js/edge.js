@@ -6,6 +6,18 @@ var Edge = function(v1, v2){
 	var color = "#000000";
 	var width = 1;
 
+	this.getAdjacentVertex = function(v){
+		if(v == v1){
+			return v2;
+		}
+		
+		if(v == v2){
+			return v1;
+		}
+
+		return null;
+	}
+
 	this.getV1 = function(){
 		return v1;
 	}
