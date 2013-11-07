@@ -38,6 +38,10 @@ var Vertex = function(apoint, alabel){
 		return point;
 	};
 
+	this.setPoint = function(newpoint){
+		point = newpoint;
+	};
+
 	this.setVisited = function(b){
 		visited = b;
 	};

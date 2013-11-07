@@ -75,20 +75,20 @@ var Graph = function(src){
 	};
 
 	var cycleRecursion = function(cycles, path){
-		var vertex = path[path.length -1];
+		var vertex = path[path.length - 1];
 		var previous = path[path.length - 2];
 		if(vertex.isVisited()){
 			//find the cycle and push it
 			var l = path.length;
 			var newcycle = new Array();
 			newcycle.push(vertex);
-			for(var i = l-2; i >= 0; i++){
+			for(var i = l-2; i >= 0; i--){
 				if(path[i] == vertex){
+					cycles.push(newcycle);
 					break;
 				}
 				newcycle.push(path[i]);
 			}
-			cycles.push(newcycle);
 		}
 		else {
 			//continue search
@@ -106,7 +106,7 @@ var Graph = function(src){
 	};
 
 	//Assumes that the graph is connected
-	this.getLargestCycle = function(){
+	this.getShortestCycle = function(){
 		this.resetVisited();
 		
 		var cycles = new Array();
@@ -116,7 +116,7 @@ var Graph = function(src){
 		v0.setVisited(true);
 		path.push(v0);
 		
-		edges = v0.getEdges();
+		var edges = v0.getEdges();
 		for(var i = 0; i < edges.length; i++){
 			var dest = edges[i].getAdjacentVertex(v0);
 			path.push(dest);
@@ -129,7 +129,7 @@ var Graph = function(src){
 
 		for(var i = 1; i < cycles.length; i++){
 			var nl = cycles[i].length;
-			if(nl > lcs){
+			if(nl < lcs){
 				lcs = nl;
 				lci = i;
 			}

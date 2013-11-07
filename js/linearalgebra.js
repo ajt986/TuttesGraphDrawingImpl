@@ -35,7 +35,7 @@ var LinearAlgebra = function(){
 	};
 
 
-	this.guassJordanElimination = function(a, b){
+	this.gaussJordanElimination = function(a, b){
 		var nrows = a.length;
 		if(nrows <= 0){
 			return [];
@@ -118,5 +118,42 @@ var LinearAlgebra = function(){
 		}
 		return rv;
 	};
+
+	this.getIdentityMatrix = function(n){
+		var rv = new Array(n);		
+		for(var i = 0; i < n; i++){
+			rv[i] = new Array(n);
+			rv[i][i] = 1;
+		}
+	};
+
+	this.getMatrixCopy = function(a){
+		var rv = new Array(a.length);
+		for(var i = 0; i < a.length; i++){
+			rv[i] = a[i].length;
+			for(var j = 0; j < a[i].length; j++){
+				rv[i][j] = a[i][j];
+			}
+		}
+	}
+
+	this.getInverseMatrix = function(a){
+		var cpy = this.getMatrixCopy(a);
+		var b = getIdentityMatrix(a.length);
+		this.gaussJordanElimination(a,b);
+		return b;
+	};
+
+	this.getSubsection = function(a, r0, nr, c0, nc){
+		var rv = new Array(nr);
+		for(var i = 0; i < nr; i++){
+			rv[i] = new Array(nc);
+			for(var j = 0; j < nc; j++){
+				rv[i][j] = a[r0+i][c0+j];
+			}
+		}
+	};
+
+	//TODO implement matrix multiplication
 
 } 
