@@ -123,8 +123,12 @@ var LinearAlgebra = function(){
 		var rv = new Array(n);		
 		for(var i = 0; i < n; i++){
 			rv[i] = new Array(n);
+			for(var j = 0; j < n; j++){
+				rv[i][j] = 0;
+			}
 			rv[i][i] = 1;
 		}
+		return rv;
 	};
 
 	this.getMatrixCopy = function(a){
@@ -135,11 +139,12 @@ var LinearAlgebra = function(){
 				rv[i][j] = a[i][j];
 			}
 		}
+		return rv;
 	}
 
 	this.getInverseMatrix = function(a){
 		var cpy = this.getMatrixCopy(a);
-		var b = getIdentityMatrix(a.length);
+		var b = this.getIdentityMatrix(a.length);
 		this.gaussJordanElimination(a,b);
 		return b;
 	};
@@ -152,8 +157,23 @@ var LinearAlgebra = function(){
 				rv[i][j] = a[r0+i][c0+j];
 			}
 		}
+		return rv;
 	};
 
-	//TODO implement matrix multiplication
+	this.matrixMultiplication = function(a, b){
+		var rv = new Array(a.length);
+		for(var i = 0; i < a.length; i++){
+			rv[i] = new Array(b[0].length);
+			for(var j = 0; j < b[0].length; j++){
+				rv[i][j] = 0;
+				for(var k = 0; k < b.length; k++){
+					var t = a[i][k];
+					var u = b[k][j];
+					rv[i][j] += a[i][k]*b[k][j];
+				}
+			}
+		}
+		return rv;
+	};
 
 } 

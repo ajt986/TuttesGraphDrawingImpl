@@ -150,25 +150,44 @@ var Graph = function(src){
 		return rv;
 	};
 
-	this.getAgencyMatrix = function(){
-		return agencymatrix;
+	var getDefaultOrder = function(){
+		var order = new Array(l.length);	
+		for(var i = 0; i < l.length; i++){
+				order[i] = [i];
+		}
+		return order;
 	};
 
-	this.getDegreeMatrix = function(){
+	this.getAgencyMatrix = function(order){
+		order = order || getDefaultOrder();
+		var l = order.length;
+		var rv = new Array(l);
+		for(var i = 0; i < l; i++){
+			rv[i] = new Array(l);
+			for(var j = 0; j < l; j++){
+				rv[i][j] = agencymatrix[order[i]][order[j]];
+			}
+		};
+		
+		return rv;
+	};
+
+	this.getDegreeMatrix = function(order){
+		order = order || getDefaultOrder();
 		var rv = new Array();
 		for(var i = 0; i < vertices.length; i++){
 			rv[i] = new Array();
 			for(var j = 0; j < vertices.length; j++){
 				rv[i][j] = 0;
 			}
-			rv[i][i] = vertices[i].getDegree();
+			rv[i][i] = vertices[order[i]].getDegree();
 		}
 		return rv;
 	};
 
-	this.getLaplacianMatrix = function(){
-		var d = this.getDegreeMatrix();
-		var a = this.getAgencyMatrix();
+	this.getLaplacianMatrix = function(order){
+		var d = this.getDegreeMatrix(order);
+		var a = this.getAgencyMatrix(order);
 		var la = new LinearAlgebra();
 		return la.matrixSubtraction(d,a);
 	};
