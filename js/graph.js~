@@ -153,7 +153,7 @@ var Graph = function(src){
 	var getDefaultOrder = function(){
 		var order = new Array(l.length);	
 		for(var i = 0; i < l.length; i++){
-				order[i] = i;
+				order[i] = [i];
 		}
 		return order;
 	};
