@@ -6,31 +6,52 @@
 	<script src="js/vertex.js"></script>
 	<script src="js/edge.js"></script>
 	<script src="js/graph.js"></script>
+	<script src="js/linearalgebra.js"></script>
+	<script src="js/geometry.js"></script>
+	<script src="js/tuttesalgorithm.js"></script>
 	<script>
+		var originalpoints;
+
+		var savePoints = function(vertices){
+			originalpoints = new Array(vertices.length);
+			for(var i = 0; i < vertices.length; i++){
+				originalpoints[i] = vertices[i].getPoint();
+			}	
+		}
+
+		var restorePoints = function(vertices){
+			for(var i = 0; i < vertices.length; i++){
+				vertices[i].setPoint(originalpoints[i]);
+			}	
+		}
 
 		$(function(){
 			var canvas = document.getElementById("appcanvas");
 			var ctx = canvas.getContext("2d");
 
-			var v1 = new Vertex([100,100], "test");
-			var v2 = new Vertex([10,10], "test2");
-			var e = new Edge(v1,v2);
+			var g;
 
-			e.draw(ctx);
-			v1.draw(ctx);
-			v2.draw(ctx);
-
-			var g = new Graph();
-
-			
-
-			$("#submit").click(function(){
-				g.loadGraph($("#graphinput").val());
+			$("#load").click(function(){
+				g = new Graph();
+				g.loadGraph($("#graphinput").val(), 600, 500);
+				savePoints(g.getVertices());
 				ctx.clearRect(0,0,600,500);
 				g.draw(ctx);
 			});
 
+			$("#restore").click(function(){
+				restorePoints(g.getVertices());
+				ctx.clearRect(0,0,600,500);
+				g.draw(ctx);
+			});
+
+			$("#pslg").click(function(){
+				var ta = new TuttesAlgorithm();
+				ta.drawGraph(ctx, g, 600, 500);
+			});
+
 		});
+
 
 
 	</script>
@@ -55,20 +76,19 @@
 	<div class="inputcontrols">
 		<div>Input:</div>
 		<div>
-			<textarea id="graphinput" rows="4" cols="25"></textarea>
+			<textarea id="graphinput" rows="4" cols="25">5&#10;0,3&#10;0,2&#10;0,1&#10;1,3&#10;1,2&#10;1,4&#10;2,3&#10;2,4&#10;3,4</textarea>
 		</div>
 		<div>
-			<button>Random Graph</button>
-			<button id="submit">Load</button>
+			<!-- <button>Random Graph</button> -->
+			<button id="load">Load</button>
 		</div>
 	</div>
 
 	<div class="algorithmcontrols">
-		<button>Original Graph</button>
+		<button id="restore">Original Graph</button>
 		<button>Previous</button>
 		<button>Next</button>
-		<button>PSLG</button>
-		<button>Barycentric Decomposition</button>
+		<button id="pslg">PSLG</button>
 	</div>
 </div>
 </body>
