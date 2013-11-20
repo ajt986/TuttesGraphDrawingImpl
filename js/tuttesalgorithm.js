@@ -1,17 +1,13 @@
 var TuttesAlgorithm = function(){
 
-	var setInitialPoints = function(vertices, cycle, w, h){
+	var getInitialPoints = function(vertices, cycle, w, h){
 		var r = (Math.min(w,h)-50)/2;
 		var cx = w/2;
 		var cy = h/2;
 
 		var geom = new Geometry();
 		
-		var coords = geom.getInscribedPoints(cycle.length, cx, cy, r);	
-
-		for(var i = 0; i < coords.length; i++){
-			vertices[cycle[i]].setPoint(coords[i]);
-		};
+		return geom.getInscribedPoints(cycle.length, cx, cy, r);	
 	}
 
 	var getOrder = function(cycle, l){
@@ -43,11 +39,11 @@ var TuttesAlgorithm = function(){
 		return order;
 	};
 
-	this.drawGraph = function(ctx, g, w, h){
+	this.getPoints = function(ctx, g, w, h, cycle){
 		var vertices = g.getVertices();
-		var cycle = g.getShortestCycle();
+		cycle = cycle || g.getShortestCycle();
 
-		setInitialPoints(vertices, cycle, w, h);
+		var initpoints = getInitialPoints(vertices, cycle, w, h);
 
 		var order = getOrder(cycle, vertices.length);
 		var l = g.getLaplacianMatrix(order);
@@ -67,7 +63,7 @@ var TuttesAlgorithm = function(){
 		var v1x = new Array(cl);
 		var v1y = new Array(cl);
 		for(var i = 0; i < cl; i++){
-			var p = vertices[cycle[i]].getPoint();
+			var p = initpoints[i]
 			v1x[i] = [p[0]];
 			v1y[i] = [p[1]];
 		};
@@ -79,11 +75,15 @@ var TuttesAlgorithm = function(){
 		for(var i = 0; i < v2x.length; i++){
 			var vi = order[cl+i];
 			var v = vertices[vi];
-			v.setPoint([v2x[i], v2y[i]]);
+			initpoints.push([v2x[i][0], v2y[i][0]]);
+		}
+
+		var rv = new Array(order.length);
+		for(var i = 0; i < order.length; i++){
+			rv[order[i]] = initpoints[i];
 		}
 		
-		ctx.clearRect(0,0,w,h);
-		g.draw(ctx);
+		return rv;
 	};
 
 }

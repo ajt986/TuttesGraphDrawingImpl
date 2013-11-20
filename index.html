@@ -3,6 +3,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	<title>LG To PLSG</title>	
 	<script src="js/jquery-1.9.1.js"></script>
+	<script src="js/ConvertMatrix.js"></script>
 	<script src="js/vertex.js"></script>
 	<script src="js/edge.js"></script>
 	<script src="js/graph.js"></script>
@@ -35,7 +36,7 @@
 			$("#matrixload").click(function(){
 				m = new ConvertMatrix();
 				//document.write("hello");
-				m.convertmatrix($("#matrixinput").val());
+				$("#matrixinput").val( m.convertmatrix($("#matrixinput").val()) );
 			});
 
 			$("#load").click(function(){
@@ -54,7 +55,26 @@
 
 			$("#pslg").click(function(){
 				var ta = new TuttesAlgorithm();
-				ta.drawGraph(ctx, g, 600, 500);
+				var p = ta.getPoints(ctx, g, 600, 500);
+				
+				var v = g.getVertices();
+				for(var i = 0; i < v.length; i++){
+					v[i].setPoint(p[i]);
+				}
+
+				ctx.clearRect(0,0,600,500);
+				g.draw(ctx);
+			});
+
+			$(canvas).click(function(event){
+				var offset = $(canvas).offset();
+				var x = (event.pageX-offset.left);
+				var y = (event.pageY-offset.top);
+
+				//TODO: if click is on the outerface
+
+				//TODO: otherwise find face
+				
 			});
 
 		});
@@ -67,9 +87,17 @@
 		#appcanvas {
 			border-style: solid;
 		}
+
+		#controls {
+			width: 600px;
+		}
 	
 		.inputcontrols {
 			float: left;
+		}
+
+		.algorithmcontrols {
+			float: right;
 		}
 
 	</style>
@@ -89,21 +117,10 @@
 			<!-- <button>Random Graph</button> -->
 			<button id="load">Load</button>
 		</div>
-		<div>
-			<textarea id = "matrixinput" rows = "4" cols = "25">4&#10;0,1,1,1&#10;1,0,1,1&#10;1,1,1,0&#10;1,1,0,1</textarea>
-		</div>
-
-		<div>
-			<!-- <button>Matrix Load button</button> -->
-			<input id="matrixload" type="button" value="Load Matrix">
-			<!--<button id="matrixload">Matrix Load</button> -->
-		</div>
 	</div>
 
 	<div class="algorithmcontrols">
 		<button id="restore">Original Graph</button>
-		<button>Previous</button>
-		<button>Next</button>
 		<button id="pslg">PSLG</button>
 	</div>
 </div>

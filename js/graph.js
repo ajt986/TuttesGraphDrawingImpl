@@ -64,8 +64,19 @@ var Graph = function(src){
 
 	};
 
+	var loadWithMatrix = function(src, w, h){
+			var cm = new ConvertMatrix();
+			loadWithEdgeList(cm.convertmatrix(src), w, h);
+	}
+
 	this.loadGraph = function(src, w, h){
-		loadWithEdgeList(src, w, h);
+		var check = src.split("\n")[0].split(",");
+		if(check.length > 1){
+			loadWithMatrix(src, w, h);
+		}
+		else{
+			loadWithEdgeList(src, w, h);
+		}
 	};
 
 	this.resetVisited = function(){
@@ -102,8 +113,11 @@ var Graph = function(src){
 					path.pop();
 				}
 			}
+			vertex.setVisited(false);
 		}
 	};
+
+	
 
 	//Assumes that the graph is connected
 	this.getShortestCycle = function(){
@@ -192,10 +206,41 @@ var Graph = function(src){
 		return la.matrixSubtraction(d,a);
 	};
 
+	var getClosestVertices = function(x, y){
+		var distances = new Array();
+
+		var calcdistance = function(x0, y0, x1, y1){
+			return Math.pow((x1-x0), 2)+Math.pow((y1-y0),2);
+		}
+
+		for(var i = 0; i < vertices.length; i++){
+			var vp = vertices[i].getPoint();
+			distances[i] = [calcdistances(vp[0], vp[1], x, y), i];
+		};
+
+		distances.sort(function(a,b){return a[0]-b[0]});
+
+		return distances;
+	};
+
+	var isCycle = function(distances, n){
+		var unvisited = new Array();
+		for(var i = 0; i < n; i++){
+			unvisited.push(vertices[distances[1]]);
+		};
+
+		while(unvisited.length > 0){
+			var cur = unvisited.pop();
+			
+		}
+		
+
+		return;
+	};
+
 	this.getVertices = function(){
 		return vertices;
 	};
-
 
 	this.getEdges = function(){
 		return edges;
