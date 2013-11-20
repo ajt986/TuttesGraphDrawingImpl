@@ -30,6 +30,13 @@
 			var ctx = canvas.getContext("2d");
 
 			var g;
+			var m;
+			
+			$("#matrixload").click(function(){
+				m = new ConvertMatrix();
+				//document.write("hello");
+				m.convertmatrix($("#matrixinput").val());
+			});
 
 			$("#load").click(function(){
 				g = new Graph();
@@ -81,6 +88,15 @@
 		<div>
 			<!-- <button>Random Graph</button> -->
 			<button id="load">Load</button>
+		</div>
+		<div>
+			<textarea id = "matrixinput" rows = "4" cols = "25">4&#10;0,1,1,1&#10;1,0,1,1&#10;1,1,1,0&#10;1,1,0,1</textarea>
+		</div>
+
+		<div>
+			<!-- <button>Matrix Load button</button> -->
+			<input id="matrixload" type="button" value="Load Matrix">
+			<!--<button id="matrixload">Matrix Load</button> -->
 		</div>
 	</div>
 
