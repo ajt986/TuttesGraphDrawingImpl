@@ -8,7 +8,7 @@ var pointsinline = function(vertex, end_points,iteration){
 	var x_1 = end_points[0];
 	var y_1 = end_points[1];
 	
-	var i = iterstion;
+	var i = iteration;
 	
 	var x_2, y_2;
 	
