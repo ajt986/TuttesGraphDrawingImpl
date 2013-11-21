@@ -35,7 +35,7 @@ var Geometry = function(){
 	}
 
 	this.intersect = function(a,b, c,d){
-		return ((this.ccw(c,a,d) == -this.ccw(c,b,d)) && (this.ccw(a,b,d) == -this.ccw(a,b,c)));
+		return (this.ccw(c,a,d) == -this.ccw(c,b,d)) && (this.ccw(a,b,d) == -this.ccw(a,b,c));
 	}
 
 }

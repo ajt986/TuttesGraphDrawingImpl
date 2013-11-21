@@ -20,8 +20,7 @@ var pointsinline = function(vertex, end_points,iteration){
 		x_2 = x_0*(1-s/i)+x_1*(s/i);
 		y_2 = y_0*(1-s/i)+y_1*(s/i);
 		
-		var final_point = new Array(2);
-		final_point[0] =x_2;
+		var final_point[0]=x_2;
 		final_point[1] = y_2;
 		vertex.setPoint(final_point);
 	}

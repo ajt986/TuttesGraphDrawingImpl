@@ -64,8 +64,19 @@ var Graph = function(src){
 
 	};
 
+	var loadWithMatrix = function(src, w, h){
+			var cm = new ConvertMatrix();
+			loadWithEdgeList(cm.convertmatrix(src), w, h);
+	}
+
 	this.loadGraph = function(src, w, h){
-		loadWithEdgeList(src, w, h);
+		var check = src.split("\n")[0].split(",");
+		if(check.length > 1){
+			loadWithMatrix(src, w, h);
+		}
+		else{
+			loadWithEdgeList(src, w, h);
+		}
 	};
 
 	this.resetVisited = function(){
@@ -102,8 +113,11 @@ var Graph = function(src){
 					path.pop();
 				}
 			}
+			vertex.setVisited(false);
 		}
 	};
+
+	
 
 	//Assumes that the graph is connected
 	this.getShortestCycle = function(){
@@ -153,7 +167,7 @@ var Graph = function(src){
 	var getDefaultOrder = function(){
 		var order = new Array(l.length);	
 		for(var i = 0; i < l.length; i++){
-				order[i] = [i];
+				order[i] = i;
 		}
 		return order;
 	};
@@ -192,10 +206,61 @@ var Graph = function(src){
 		return la.matrixSubtraction(d,a);
 	};
 
+	var getClosestVertices = function(x, y){
+		var distances = new Array();
+
+		var calcdistance = function(x0, y0, x1, y1){
+			return Math.pow((x1-x0), 2)+Math.pow((y1-y0),2);
+		}
+
+		for(var i = 0; i < vertices.length; i++){
+			var vp = vertices[i].getPoint();
+			distances[i] = [calcdistance(vp[0], vp[1], x, y), i];
+		};
+
+		distances.sort(function(a,b){return a[0]-b[0]});
+
+		return distances;
+	};
+
+	this.getFace = function(x, y){
+		var rv = new Array();
+
+		var geom = new Geometry();
+
+		var t = geom.intersect(0,2, 2,2, 0,0, 1,1);
+
+		var p1 = [x,y];
+
+		for(var i = 0; i < vertices.length; i++){
+			var p2 = vertices[i].getPoint();
+			var add = true;
+			for(var j = 0; j < edges.length; j++){
+				var v1 = edges[j].getV1();
+				var v2 = edges[j].getV2();
+
+				if(v1 == vertices[i] || v2 == vertices[i]){
+					continue;
+				}
+
+				var p3 = v1.getPoint();
+				var p4 = v2.getPoint();
+
+				if(geom.intersect(p1,p2, p3,p4)){
+					add = false;
+					break;
+				}
+			}
+			if(add){
+				rv.push(i);
+			}
+		}
+		return rv;
+	};
+
 	this.getVertices = function(){
 		return vertices;
 	};
-
 
 	this.getEdges = function(){
 		return edges;

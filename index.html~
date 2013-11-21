@@ -100,7 +100,7 @@
 				var face = g.getFace(x,y);
 
 				var ta = new TuttesAlgorithm();
-				var p = ta.getPoints(ctx, g, 600, 500, face);
+				var p = ta.getPoints(ctx, g, 600, 500);
 				
 				animate(ctx, g, p);
 

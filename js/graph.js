@@ -215,7 +215,7 @@ var Graph = function(src){
 
 		for(var i = 0; i < vertices.length; i++){
 			var vp = vertices[i].getPoint();
-			distances[i] = [calcdistances(vp[0], vp[1], x, y), i];
+			distances[i] = [calcdistance(vp[0], vp[1], x, y), i];
 		};
 
 		distances.sort(function(a,b){return a[0]-b[0]});
@@ -223,19 +223,39 @@ var Graph = function(src){
 		return distances;
 	};
 
-	var isCycle = function(distances, n){
-		var unvisited = new Array();
-		for(var i = 0; i < n; i++){
-			unvisited.push(vertices[distances[1]]);
-		};
+	this.getFace = function(x, y){
+		var rv = new Array();
 
-		while(unvisited.length > 0){
-			var cur = unvisited.pop();
-			
+		var geom = new Geometry();
+
+		var t = geom.intersect([0,2], [2,2], [0,0], [1,1]);
+
+		var p1 = [x,y];
+
+		for(var i = 0; i < vertices.length; i++){
+			var p2 = vertices[i].getPoint();
+			var add = true;
+			for(var j = 0; j < edges.length; j++){
+				var v1 = edges[j].getV1();
+				var v2 = edges[j].getV2();
+
+				if(v1 == vertices[i] || v2 == vertices[i]){
+					continue;
+				}
+
+				var p3 = v1.getPoint();
+				var p4 = v2.getPoint();
+
+				if(geom.intersect(p1,p2, p3,p4)){
+					add = false;
+					break;
+				}
+			}
+			if(add){
+				rv.push(i);
+			}
 		}
-		
-
-		return;
+		return rv;
 	};
 
 	this.getVertices = function(){

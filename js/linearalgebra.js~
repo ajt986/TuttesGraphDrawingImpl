@@ -35,7 +35,7 @@ var LinearAlgebra = function(){
 	};
 
 
-	this.guassJordanElimination = function(a, b){
+	this.gaussJordanElimination = function(a, b){
 		var nrows = a.length;
 		if(nrows <= 0){
 			return [];
@@ -90,10 +90,94 @@ var LinearAlgebra = function(){
 			}
 
 		}
-
-		
-
 	};
 
+
+	this.matrixScalarMultiplication = function(matrix, c){
+		var rv = new Array();
+		for(var i = 0; i < matrix.length; i++){
+			rv[i] = new Array();
+			for(var j = 0; j < matrix[i].length; j++){
+				rv[i][j] = matrix[i][j]*c;
+			}
+		}
+		return rv;
+	};
+
+	this.matrixSubtraction = function(a, b){
+		return this.matrixAddition(a, this.matrixScalarMultiplication(b, -1));
+	};
+	
+	this.matrixAddition = function(a, b){
+		var rv = new Array();
+		for(var i = 0; i < a.length; i++){
+			rv[i] = new Array();
+			for(var j = 0; j < a[i].length; j++){
+				rv[i][j] = a[i][j]+b[i][j];
+			}
+		}
+		return rv;
+	};
+
+	this.getIdentityMatrix = function(n){
+		var rv = new Array(n);		
+		for(var i = 0; i < n; i++){
+			rv[i] = new Array(n);
+			for(var j = 0; j < n; j++){
+				rv[i][j] = 0;
+			}
+			rv[i][i] = 1;
+		}
+		return rv;
+	};
+
+	this.getMatrixCopy = function(a){
+		var rv = new Array(a.length);
+		for(var i = 0; i < a.length; i++){
+			rv[i] = a[i].length;
+			for(var j = 0; j < a[i].length; j++){
+				rv[i][j] = a[i][j];
+			}
+		}
+		return rv;
+	}
+
+	this.getInverseMatrix = function(a){
+		var cpy = this.getMatrixCopy(a);
+		var b = this.getIdentityMatrix(a.length);
+		this.gaussJordanElimination(a,b);
+		return b;
+	};
+
+	this.getSubsection = function(a, r0, nr, c0, nc){
+		var rv = new Array(nr);
+		for(var i = 0; i < nr; i++){
+			rv[i] = new Array(nc);
+			for(var j = 0; j < nc; j++){
+				rv[i][j] = a[r0+i][c0+j];
+			}
+		}
+		return rv;
+	};
+
+	this.matrixMultiplication = function(a, b){
+		var rv = new Array(a.length);
+		for(var i = 0; i < a.length; i++){
+			rv[i] = new Array(b[0].length);
+			for(var j = 0; j < b[0].length; j++){
+				rv[i][j] = 0;
+				for(var k = 0; k < b.length; k++){
+					var t = a[i][k];
+					var u = b[k][j];
+					rv[i][j] += a[i][k]*b[k][j];
+				}
+			}
+		}
+		return rv;
+	};
+
+	this.determinant3 = function(m){
+		return m[0][0]*m[1][1]*m[2][2] + m[0][1]*m[1][2]*m[2][0] + m[0][2]*m[1][0]*m[2][1] - m[0][2]*m[1][1]*m[2][0] - m[0][1]*m[1][0]*m[2][2] - m[0][0]*m[1][2]*m[2][1];
+	};
 
 } 
