@@ -13,6 +13,40 @@
 	<script src="js/pointsinline.js"></script>
 	<script>
 		var originalpoints;
+		var outerface;
+		var hoverface;
+		var allowclick = false;
+
+		var saveOuterFace = function(face, p){
+			hoverface = null;
+			outerface = new Array();
+			for(var i = 0; i < face.length; i++){
+				outerface.push(p[face[i]]);
+			};
+		};
+
+		var saveHoverFace = function(face, p){
+			hoverface = new Array();
+			for(var i = 0; i < face.length; i++){
+				hoverface.push(p[face[i]].getPoint());
+			};
+		};
+
+		var fillHover = function(ctx,g){
+			ctx.clearRect(0,0,600,500);
+
+			if(hoverface != null && hoverface.length > 2){
+				ctx.fillStyle = "#0099ff";
+				ctx.beginPath();
+				ctx.moveTo(hoverface[0][0], hoverface[0][1]);
+				for(var i = 1; i < hoverface.length; i++){
+					ctx.lineTo(hoverface[i][0], hoverface[i][1]);
+				};
+				ctx.closePath();
+				ctx.fill();
+			}
+			g.draw(ctx);
+		};
 
 		var savePoints = function(vertices){
 			originalpoints = new Array(vertices.length);
@@ -21,93 +55,118 @@
 			}	
 		}
 
-		var restorePoints = function(vertices){
-			for(var i = 0; i < vertices.length; i++){
-				vertices[i].setPoint(originalpoints[i]);
-			}	
-		}
+		var disableInteractions = function(){
+			allowclick = false;
+			$("#load").prop("disabled", true);
+			$("#restore").prop("disabled", true);
+			$("#pslg").prop("disabled", true);
+		};
 
-		var animate = function(ctx, g, endpoints){
+		var enableInteractions = function(aclick){
+			allowclick = aclick;
+			$("#load").prop("disabled", false);
+			$("#restore").prop("disabled", false);
+			$("#pslg").prop("disabled", false);
+		};
+
+		var animate = function(ctx, buffer, g, endpoints, aclick){
+				var bufferctx = buffer.getContext("2d");
 				var v = g.getVertices();
-
 				var iterations = 100;
-
 				var fp = new Array(v.length);
-
 				for(var i = 0; i < v.length; i++){
 					fp[i] = pointsinline(v[i], endpoints[i], iterations);
 				}
-
-
+				disableInteractions();
 				var callback = function(){
 					for(var j = 0; j < v.length; j++){
 						fp[j](i);
 					}
+					bufferctx.clearRect(0,0,600,500);
+					g.draw(bufferctx);
+					
 					ctx.clearRect(0,0,600,500);
-					g.draw(ctx);
-
+					ctx.drawImage(buffer, 0, 0);
 
 					if(i < iterations){
 						window.setTimeout(callback, 30);
 					}
-
+					else{
+						enableInteractions(aclick);
+					}
 					i++;
 				}
-
 				window.setTimeout(callback, 1000 / 60);
-
 		}
 
 		$(function(){
 			var canvas = document.getElementById("appcanvas");
 			var ctx = canvas.getContext("2d");
 
+			var buffer = document.getElementById("buffer");
+
 			var g;
 			var m;
 			
-			$("#matrixload").click(function(){
-				m = new ConvertMatrix();
-				//document.write("hello");
-				$("#matrixinput").val( m.convertmatrix($("#matrixinput").val()) );
-			});
-
 			$("#load").click(function(){
 				g = new Graph();
 				g.loadGraph($("#graphinput").val(), 600, 500);
 				savePoints(g.getVertices());
 				ctx.clearRect(0,0,600,500);
 				g.draw(ctx);
+				allowclick = false;
 			});
 
 			$("#restore").click(function(){
-				restorePoints(g.getVertices());
-				ctx.clearRect(0,0,600,500);
-				g.draw(ctx);
+				hoverface = null;
+				animate(ctx, buffer, g, originalpoints, false);
 			});
 
 			$("#pslg").click(function(){
 				var ta = new TuttesAlgorithm();
-				var p = ta.getPoints(ctx, g, 600, 500);
-				
-				animate(ctx, g, p);
+
+				var face = g.getShortestCycle();
+				var p = ta.getPoints(ctx, g, 600, 500, face);
+				saveOuterFace(face,p);
+				animate(ctx, buffer, g, p, true);
+			});
+
+			$(canvas).mousemove(function(event){
+				if(allowclick){
+					var offset = $(canvas).offset();
+					var x = (event.pageX-offset.left);
+					var y = (event.pageY-offset.top);
+					var geom = new Geometry();
+
+					if(geom.inConvexPolygon(outerface, [x,y])){
+						if(hoverface == null || hoverface.length < 3 || !geom.inConvexPolygon(hoverface, [x,y])){
+							var face = g.getFace(x,y);
+							saveHoverFace(face, g.getVertices());
+						}
+						fillHover(ctx, g);
+					}
+					else{
+						ctx.clearRect(0,0,600,500);
+						g.draw(ctx);
+					}
+				}
 			});
 
 			$(canvas).click(function(event){
-				var offset = $(canvas).offset();
-				var x = (event.pageX-offset.left);
-				var y = (event.pageY-offset.top);
+				if(allowclick){
+					var offset = $(canvas).offset();
+					var x = (event.pageX-offset.left);
+					var y = (event.pageY-offset.top);
 
-				var face = g.getFace(x,y);
-
-				var ta = new TuttesAlgorithm();
-				var p = ta.getPoints(ctx, g, 600, 500, face);
-				
-				animate(ctx, g, p);
-
-				//TODO: if click is on the outerface
-
-				//TODO: otherwise find face
-				
+					var geom = new Geometry();
+					if(geom.inConvexPolygon(outerface, [x,y])){
+						var face = g.getFace(x,y);
+						var ta = new TuttesAlgorithm();
+						var p = ta.getPoints(ctx, g, 600, 500, face);
+						saveOuterFace(face,p);
+						animate(ctx, buffer, g, p, true);
+					}
+				}
 			});
 
 		});
@@ -118,11 +177,23 @@
 
 	<style>
 		#appcanvas {
-			border-style: solid;
+			border-style: groove;
+			border-color: #aaaaaa;
+			border-width: 3px;
+		}
+
+		#buffer {
+			visibility: hidden;
 		}
 
 		#controls {
 			width: 600px;
+			font-family: Arial, Sans-Serif;
+		}
+
+		#loadbutton {
+			margin-right: 5px;
+			float: right;
 		}
 	
 		.inputcontrols {
@@ -132,22 +203,21 @@
 		.algorithmcontrols {
 			float: right;
 		}
-
 	</style>
 </head>
 <body>
 
 <canvas id="appcanvas" width="600" height="500"></canvas>
+<canvas id="buffer" width="600" height="500"></canvas>
 
 <div id="controls">
 
 	<div class="inputcontrols">
 		<div>Input:</div>
 		<div>
-			<textarea id="graphinput" rows="4" cols="25">5&#10;0,3&#10;0,2&#10;0,1&#10;1,3&#10;1,2&#10;1,4&#10;2,3&#10;2,4&#10;3,4</textarea>
+			<textarea id="graphinput" rows="4" cols="40">5&#10;0,3&#10;0,2&#10;0,1&#10;1,3&#10;1,2&#10;1,4&#10;2,3&#10;2,4&#10;3,4</textarea>
 		</div>
-		<div>
-			<!-- <button>Random Graph</button> -->
+		<div id="loadbutton">
 			<button id="load">Load</button>
 		</div>
 	</div>

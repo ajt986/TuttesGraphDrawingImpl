@@ -14,7 +14,7 @@ var Geometry = function(){
 			curangle += aincr;
 		}
 		return rv;
-	}
+	};
 
 	this.ccw = function(a,b,c){
 		var la = new LinearAlgebra();
@@ -32,10 +32,24 @@ var Geometry = function(){
 		else {
 			return 0;
 		}
-	}
+	};
 
 	this.intersect = function(a,b, c,d){
 		return ((this.ccw(c,a,d) == -this.ccw(c,b,d)) && (this.ccw(a,b,d) == -this.ccw(a,b,c)));
-	}
+	};
+
+	this.inConvexPolygon = function(polygon, p){
+		var test = this.ccw(polygon[0], polygon[1], polygon[2]);
+
+		var l = polygon.length;
+		for(var i = 0; i < l; i++){
+			var p1 = polygon[i];
+			var p2 = polygon[((i+1)%l)];
+			if(this.ccw(p1,p2,p) != test){
+				return false;
+			}
+		};
+		return true;
+	};
 
 }

@@ -223,8 +223,48 @@ var Graph = function(src){
 		return distances;
 	};
 
-	this.getFace = function(x, y){
+	var getOrderedFace = function(vlist){
 		var rv = new Array();
+		rv.push(vlist.pop());
+
+		while(vlist.length > 0){
+			var last = vertices[rv[rv.length-1]];
+			var el = last.getEdges();
+			var endloop = true;
+
+			var l = vlist.length;
+			var visited = new Array();
+			for(var i = 0; i < l; i++){
+				var cur = vlist.pop();
+				var t = false;
+				for(var j = 0; j < el.length; j++){
+					var ev = el[j].getAdjacentVertex(last);
+					if(ev == vertices[cur]){
+						rv.push(cur);
+						endloop = false;
+						t = true;
+					}
+				}
+				if(t){
+					for(var k = i+1; k < l; k++){
+						visited.push(vlist.pop());
+					}
+					break;
+				}
+				else{
+					visited.push(cur);
+				}
+			}
+			vlist = visited;
+			if(endloop){
+				return [];
+			}
+		}
+		return rv;
+	};
+
+	this.getFace = function(x, y){
+		var unordered = new Array();
 
 		var geom = new Geometry();
 
@@ -252,10 +292,11 @@ var Graph = function(src){
 				}
 			}
 			if(add){
-				rv.push(i);
+				unordered.push(i);
 			}
 		}
-		return rv;
+
+		return getOrderedFace(unordered);
 	};
 
 	this.getVertices = function(){
