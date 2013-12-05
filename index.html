@@ -184,11 +184,13 @@
 
 		#buffer {
 			visibility: hidden;
+			display: none;
 		}
 
 		#controls {
 			width: 600px;
 			font-family: Arial, Sans-Serif;
+			font-weight: bold;
 		}
 
 		#loadbutton {
@@ -203,29 +205,172 @@
 		.algorithmcontrols {
 			float: right;
 		}
+
+		#main {
+			float: left;
+			margin-right: 50px;
+			padding-right: 50px;
+			border-right: solid 1px;
+		}
+
+		#examples {
+			font-family: Arial, Sans-Serif;
+			font-weight: bold;
+			overflow: auto;
+		}
+
+		#examplestitle {
+			font-size: 1.7em;
+		}
+
+		.examplestextbox {
+			width: 300px;
+		}
 	</style>
 </head>
 <body>
 
-<canvas id="appcanvas" width="600" height="500"></canvas>
-<canvas id="buffer" width="600" height="500"></canvas>
+<div id="main">
+	<canvas id="appcanvas" width="600" height="500"></canvas>
+	<canvas id="buffer" width="600" height="500"></canvas>
 
-<div id="controls">
-
-	<div class="inputcontrols">
-		<div>Input:</div>
-		<div>
-			<textarea id="graphinput" rows="4" cols="40">5&#10;0,3&#10;0,2&#10;0,1&#10;1,3&#10;1,2&#10;1,4&#10;2,3&#10;2,4&#10;3,4</textarea>
+	<div id="controls">
+		<div class="inputcontrols">
+			<div>Input:</div>
+			<div>
+				<textarea id="graphinput" rows="4" cols="40">5&#10;0,3&#10;0,2&#10;0,1&#10;1,3&#10;1,2&#10;1,4&#10;2,3&#10;2,4&#10;3,4</textarea>
+			</div>
+			<div id="loadbutton">
+				<button id="load">Load</button>
+			</div>
 		</div>
-		<div id="loadbutton">
-			<button id="load">Load</button>
-		</div>
-	</div>
 
-	<div class="algorithmcontrols">
-		<button id="restore">Original Graph</button>
-		<button id="pslg">PSLG</button>
+		<div class="algorithmcontrols">
+			<button id="restore">Original Graph</button>
+			<button id="pslg">PSLG</button>
+		</div>
 	</div>
 </div>
+
+<div id="examples">
+	<span id="examplestitle">Examples:</span><br /><br />
+	<div>
+	Example 1:
+		<div>
+			<textarea class="examplestextbox">
+0,1,0,1,1
+1,0,1,0,1
+0,1,0,1,1
+1,0,1,0,1
+1,1,1,1,0</textarea>
+		</div>
+	</div>
+
+	<div>
+	Example 2:
+		<div>
+			<textarea class="examplestextbox">
+0,1,0,1,1,0
+1,0,1,0,1,0
+0,1,0,1,0,1
+1,0,1,0,1,1
+1,1,1,0,0,1
+0,0,1,1,1,0</textarea>
+		</div>
+	</div>
+
+	<div>
+	Example 3 - Not Planar?:
+		<div>
+			<textarea class="examplestextbox">
+0,1,0,1,1,0,0,0,0,1,1
+1,0,1,0,1,0,1,0,0,0,0
+0,1,0,1,1,1,0,1,0,0,0
+1,0,1,0,0,1,1,1,0,0,0
+1,1,1,0,0,1,0,0,0,0,0
+0,0,1,1,1,0,0,0,0,0,0
+0,1,0,1,0,0,0,1,1,0,0
+0,0,1,1,0,0,1,0,1,0,0
+0,0,0,0,0,0,1,1,0,1,1
+1,0,0,0,0,0,0,0,1,0,1
+1,0,0,0,0,0,0,0,1,1,0</textarea>
+		</div>
+	</div>
+
+	<div>
+	Example 4 - Regular Solid (Icosahedron):
+		<div>
+			<textarea class="examplestextbox">
+0,1,0,0,1,1,0,0,1,1,0,0
+1,0,0,0,0,0,1,1,1,1,0,0
+0,0,0,1,1,1,0,0,0,0,1,1
+0,0,1,0,0,0,1,1,0,0,1,1
+1,0,1,0,0,1,0,0,1,0,1,0
+1,0,1,0,1,0,0,0,0,1,0,1
+0,1,0,1,0,0,0,1,1,0,1,0
+0,1,0,1,0,0,1,0,0,1,0,1
+1,1,0,0,1,0,1,0,0,0,1,0
+1,1,0,0,0,1,0,1,0,0,0,1
+0,0,1,1,1,0,1,0,1,0,0,0
+0,0,1,1,0,1,0,1,0,1,0,0</textarea>
+		</div>
+	</div>
+
+	<div>
+	Example 5:
+		<div>
+			<textarea class="examplestextbox">
+0,1,1,1,0,1
+1,0,1,1,1,0
+1,1,0,0,0,1
+1,1,0,0,1,0
+0,1,0,1,0,1
+1,0,1,0,1,0</textarea>
+		</div>
+	</div>
+
+	<div>
+	Example 6 - Regular solid 2:
+		<div>
+			<textarea class="examplestextbox">
+0,1,0,1,1,0,0,0
+1,0,1,0,0,1,0,0
+0,1,0,1,0,0,1,0
+1,0,1,0,0,0,0,1
+1,0,0,0,0,1,0,1
+0,1,0,0,1,0,1,0
+0,0,1,0,0,1,0,1
+0,0,0,1,1,0,1,0</textarea>
+		</div>
+	</div>
+
+	<div>
+	Example 7 - Dodecahedron:
+		<div>
+			<textarea class="examplestextbox">
+0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0
+0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,0
+0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1
+0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0
+0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1
+0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0
+0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0
+0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,0
+0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0
+0,0,0,0,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0
+0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0
+0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0
+1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0
+1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0
+1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0
+0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,1
+0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
+0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0</textarea>
+		</div>
+	</div>
+</div>
+
 </body>
 </html>
